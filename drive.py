@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from pickle import FALSE
 from random import randrange
 import time
@@ -131,7 +133,7 @@ def main():
                 turn_left(turn_speed)
             else:    
                 turn_right(turn_speed)
-            #time.sleep(0.1)
+            time.sleep(0.1)
         else:
             forward(fwd_speed)
 
