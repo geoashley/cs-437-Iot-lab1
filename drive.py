@@ -10,6 +10,7 @@ from lib.pwm import PWM
 from lib.pin import Pin
 
 fwd_speed = 30
+bwd_speed = 15
 turn_speed = 10
 ultrasonic_servo_offset = 0 
 
@@ -128,6 +129,7 @@ def main():
             stop()
             direction = randrange(1,3)
             turn_speed = randrange(10,31)
+            backward(bwd_speed)
             time.sleep(0.1)
             if direction == 1:
                 turn_left(turn_speed)
