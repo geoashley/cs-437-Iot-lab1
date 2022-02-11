@@ -26,14 +26,15 @@ y_carD = 0 #car distance y value
 
 def get_scan(angle):
     #replaces empty numpy array with [degree of angle, distance from sensor]
+    actualAngle = 90
     for i in range(len(gridMap)):
         distance = us.get_distance()
         gridMap[i][0] = angle
         gridMap[i][1] = distance
         if ((gridMap[i][1] < 10)):
             gridMap[i][1] = 0
-        if ((angle) != 0):
-            angle -= 15
+        angle -= 15
+        actualAngle -= 20
         pan_servo.write(angle)
         sleep(3)
     #calculates cartesian points
@@ -51,7 +52,7 @@ def get_scan(angle):
     #imports the 10X2 numpy array and translates it into the 10x10 array
     for i in range(len(gridFinal)):
         if((gridMap[i][0]) == 1 and (gridMap[i][1]) == 1):
-            gridFinal[0][i] = 1
+            gridFinal[y_carD][i] = 1
 
 
 def main():
