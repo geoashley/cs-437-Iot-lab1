@@ -29,7 +29,7 @@ def get_scan(angle):
     actualAngle = 90
     for i in range(len(gridMap)):
         distance = us.get_distance()
-        gridMap[i][0] = angle
+        gridMap[i][0] = actualAngle
         gridMap[i][1] = distance
         if ((gridMap[i][1] < 10)):
             gridMap[i][1] = 0
