@@ -26,7 +26,7 @@ def get_scan( x_carD, y_carD):
     #replaces empty numpy array with [degree of angle, distance from sensor]
     actualAngle = 90
     pan_servo.set_angle(actualAngle)
-    sleep(3)
+    sleep(1)
 
     #print("gridMAp inital",gridMap)
     for i in range(len(gridMap)):
@@ -37,15 +37,15 @@ def get_scan( x_carD, y_carD):
         if (distance >0 and distance <= 25):
             gridMap[i][1] = distance
         actualAngle -= 18
-        sleep(3)
-    print("gridMAp mid")
-    print(gridMap)
+        sleep(1)
+   # print("gridMAp mid")
+    #print(gridMap)
     #calculates cartesian points
     for i in range(len(gridMap)):
         gridMap[i][0] = int(gridMap[i][1] * math.sin(math.radians(gridMap[i][0])) + x_carD)
         gridMap[i][1] = int(gridMap[i][1] * math.cos(math.radians(gridMap[i][0])) + y_carD)
-    print("gridMAp cart")
-    print(gridMap)
+    #print("gridMAp cart")
+    #print(gridMap)
     #determines if cartesian point is an object
     for i in range(len(gridMap)):
         if not ((gridMap[i][0] > 0) and (gridMap[i][1] > 0)):

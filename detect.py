@@ -71,7 +71,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
   detector = ObjectDetector(model_path=model, options=options)
 
 # Continuously capture images from the camera and run inference
-  while cap.isOpened():
+  while cap.isOpened() and not globalvars.goal_reached:
     success, image = cap.read()
     if not success:
       sys.exit(
@@ -88,7 +88,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       category = detection.categories[0]
       object_height = detection.bounding_box[3] - detection.bounding_box[1] 
       class_name = category.label
-      print(class_name,object_height)
+     # print(class_name,object_height)
       if class_name == 'stop sign':
           if object_height/height >0.5:
               print('Stop sign detected nearby')
