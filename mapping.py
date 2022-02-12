@@ -21,46 +21,45 @@ pan_servo = Servo(PWM("P0"), offset=ultrasonic_servo_offset)
 gridMap = np.zeros((10,2)) # hold values used to calculate points [x,y]
 gridFinal = np.zeros((10,10)) # holds 10 X 10 coordinate map
 
-x_carD = 0 #car distance x value
-y_carD = 0 #car distance y value
 
-def get_scan(angle):
+def get_scan( x_carD, y_carD):
     #replaces empty numpy array with [degree of angle, distance from sensor]
     actualAngle = 90
+    pan_servo.set_angle(actualAngle)
+    sleep(3)
+
+    #print("gridMAp inital",gridMap)
     for i in range(len(gridMap)):
+        pan_servo.set_angle(actualAngle)
         distance = us.get_distance()
+        print("angles distance ",actualAngle, distance)
         gridMap[i][0] = actualAngle
-        gridMap[i][1] = distance
-        if ((gridMap[i][1] < 10)):
-            gridMap[i][1] = 0
-        angle -= 15
-        actualAngle -= 20
-        pan_servo.write(angle)
+        if (distance >0 and distance <= 10):
+            gridMap[i][1] = distance
+        actualAngle -= 18
         sleep(3)
+    print("gridMAp mid")
+    print(gridMap)
     #calculates cartesian points
     for i in range(len(gridMap)):
-        gridMap[i][0] = (gridMap[i][1] * math.cos(math.radians(gridMap[i][0])) + x_carD)
-        gridMap[i][1] = (gridMap[i][1] * math.cos(math.radians(gridMap[i][0])) + y_carD)
+        gridMap[i][0] = int(gridMap[i][1] * math.sin(math.radians(gridMap[i][0])) + x_carD)
+        gridMap[i][1] = int(gridMap[i][1] * math.cos(math.radians(gridMap[i][0])) + y_carD)
+    print("gridMAp cart")
+    print(gridMap)
     #determines if cartesian point is an object
     for i in range(len(gridMap)):
-        if((gridMap[i][0] >= 0) and (gridMap[i][1] >= 0)):
-           gridMap[i][0] = 1
-           gridMap[i][1] = 1
-        else:
+        if not ((gridMap[i][0] > 0) and (gridMap[i][1] > 0)):
            gridMap[i][0] = 0
            gridMap[i][1] = 0
-    #imports the 10X2 numpy array and translates it into the 10x10 array
-    for i in range(len(gridFinal)):
-        if((gridMap[i][0]) == 1 and (gridMap[i][1]) == 1):
-            gridFinal[y_carD][i] = 1
 
+    return gridMap
 
 def main():
     # initial angle for pan
     pan_angle= 180
     print("Begin scanning")
     pan_servo.write(pan_angle)
-    get_scan(pan_angle)
+    get_scan(pan_angle, 0, 0)
     #result map
     print(gridFinal)
 

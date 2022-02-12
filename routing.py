@@ -92,6 +92,9 @@ diagram4.weights = {loc: 5 for loc in [(3, 4), (3, 5), (4, 1), (4, 2),
                                        (6, 4), (6, 5), (6, 6), (6, 7),
                                        (7, 3), (7, 4), (7, 5)]}
 
+squareGrid = SquareGrid(10, 10)
+squareGrid.walls = [(1, 7), (1, 8), (2, 7), (2, 8), (3, 7), (3, 8)]
+
 class PriorityQueue:
     def __init__(self):
         self.elements: List[Tuple[float, T]] = []
@@ -142,7 +145,9 @@ def a_star_search(graph: WeightedGraph, start: Location, goal: Location):
             break
         
         for next in graph.neighbors(current):
-            new_cost = cost_so_far[current] + graph.cost(current, next)
+            #new_cost = cost_so_far[current] + graph.cost(current, next)
+            new_cost = cost_so_far[current] + 1
+
             if next not in cost_so_far or new_cost < cost_so_far[next]:
                 cost_so_far[next] = new_cost
                 priority = new_cost + heuristic(next, goal)
@@ -159,13 +164,29 @@ class SquareGridNeighborOrder(SquareGrid):
         results = filter(self.passable, results)
         return list(results)
 
-start, goal = (1, 4), (8, 3)
-came_from, cost_so_far = a_star_search(diagram4, start, goal)
-draw_grid(diagram4, point_to=came_from, start=start, goal=goal)
-print()
-draw_grid(diagram4, path=reconstruct_path(came_from, start=start, goal=goal))
+# start, goal = (1, 4), (8, 3)
+# came_from, cost_so_far = a_star_search(diagram4, start, goal)
+# draw_grid(diagram4, point_to=came_from, start=start, goal=goal)
+# print()
+# draw_grid(diagram4, path=reconstruct_path(came_from, start=start, goal=goal))
 
+# start, goal = (1, 4), (8, 3)
+# came_from, cost_so_far = a_star_search(diagram4, start, goal)
+# draw_grid(diagram4, number=cost_so_far, start=start, goal=goal)
+ 
+
+# print(range(squareGrid.height))
+# print(range(squareGrid.width))
 start, goal = (1, 4), (8, 3)
-came_from, cost_so_far = a_star_search(diagram4, start, goal)
-draw_grid(diagram4, number=cost_so_far, start=start, goal=goal)
+print(squareGrid.walls)
+came_from, cost_so_far = a_star_search(squareGrid, start, goal)
+#draw_grid(squareGrid, point_to=came_from, start=start, goal=goal)
+#print(came_from)
+path=reconstruct_path(came_from, start=start, goal=goal)
+print(path)
+draw_grid(squareGrid, path=path)
+
+#start, goal = (1, 4), (8, 3)
+#came_from, cost_so_far = a_star_search(squareGrid, start, goal)
+#draw_grid(squareGrid, number=cost_so_far, start=start, goal=goal)
  

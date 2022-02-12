@@ -17,8 +17,14 @@ scp /path/to/car.zip pi@<ipaddress>:
 ````
 unzip car.zip -d car
 ````
-## Run
+## Run Drive
 
 ````
 make run
+````
+
+## Run Navigate
+
+````
+make navigate
 ````
