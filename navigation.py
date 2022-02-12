@@ -2,11 +2,10 @@
 
 from concurrent.futures import thread
 import time
-from turtle import st
 from drive import backward, forward, stop, turn_left, turn_right
 from mapping import get_scan
 from routing import SquareGrid, a_star_search, draw_grid, reconstruct_path
-from random import randrange
+
 
 
 
@@ -44,10 +43,10 @@ from random import randrange
 # print(path)
 # draw_grid(squareGrid, path=path)
 
-power = 10
-squareGrid = SquareGrid(50, 50)
-start, goal = (25, 0), (45, 48)
-current = start
+# power = 10
+# squareGrid = SquareGrid(50, 50)
+# start, goal = (25, 0), (45, 48)
+# current = start
 
 def scan_interpolate( x_carD, y_carD):
     scan_grid = get_scan(x_carD, y_carD)
@@ -97,7 +96,8 @@ direction = {0 : forward,
 }  
 
 def main():
-    power = 20
+    power = 1
+    global squareGrid
     squareGrid = SquareGrid(50, 50)
     start, goal = (25, 0), (45, 48)
     current = start
@@ -108,8 +108,8 @@ def main():
         print(path)
         draw_grid(squareGrid, path=path)
         for i in range(1, 3):
-            direction[randrange(0,3)](power)
-            time.sleep(0.3)
+            direction[get_going(current[0], current[1], path[i][0], path[i][1])](power)
+            time.sleep(0.2)
             stop()
             current = (path[i][0], path[i][1])
 
