@@ -9,7 +9,7 @@ from routing import SquareGrid, a_star_search, draw_grid, reconstruct_path
 import globalvars
 import threading
 
-global squareGrid
+
 
 
 def scan_interpolate( x_carD, y_carD):
@@ -67,7 +67,7 @@ def stop_sign_detected():
             globalvars.stop_sign_found = False
 
 def main():
-    
+    global squareGrid
     globalvars.init()
 
     thread_1 = threading.Thread(target=stop_sign_detection)
