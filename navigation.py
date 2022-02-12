@@ -92,7 +92,8 @@ def main():
         path=reconstruct_path(came_from, start=current, goal=goal)
       #  print(path)
         draw_grid(squareGrid, path=path)
-        for i in range(1, len(path)):
+        no_steps = len(path) if len(path)<20 else 20
+        for i in range(1, no_steps):
             next_move = get_going(current[0], current[1], path[i][0], path[i][1])
             direction[next_move](power)
             if(next_move==1 or next_move ==2):
@@ -100,7 +101,7 @@ def main():
                 print(current, goal, next_move)
                 start, goal = recalculate_axes(current, goal, next_move)
                 print(start, goal)
-                time.sleep(0.9)
+                time.sleep(0.7)
                 current = start
                 break
             else:
