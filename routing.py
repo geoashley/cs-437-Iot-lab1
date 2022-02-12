@@ -1,12 +1,6 @@
-# Sample code from https://www.redblobgames.com/pathfinding/a-star/
-# Copyright 2014 Red Blob Games <redblobgames@gmail.com>
-#
-# Feel free to use this code in your own projects, including commercial projects
-# License: Apache v2.0 <http://www.apache.org/licenses/LICENSE-2.0.html>
 
 from __future__ import annotations
 from cmath import sqrt
-# some of these types are deprecated: https://www.python.org/dev/peps/pep-0585/
 from typing import Protocol, Dict, List, Iterator, Tuple, TypeVar, Optional
 T = TypeVar('T')
 

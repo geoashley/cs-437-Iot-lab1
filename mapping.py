@@ -34,7 +34,7 @@ def get_scan( x_carD, y_carD):
         distance = us.get_distance()
         print("angles distance ",actualAngle, distance)
         gridMap[i][0] = actualAngle
-        if (distance >0 and distance <= 10):
+        if (distance >0 and distance <= 25):
             gridMap[i][1] = distance
         actualAngle -= 18
         sleep(3)

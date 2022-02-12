@@ -3,23 +3,38 @@
 from mapping import get_scan
 from routing import SquareGrid, a_star_search, draw_grid, reconstruct_path
 
-
-
-
-squareGrid = SquareGrid(10, 10)
-#squareGrid.walls = [(1, 7), (1, 8), (2, 7), (2, 8), (3, 7), (3, 8)]
-start, goal = (5, 0), (8, 9)
+squareGrid = SquareGrid(50, 50)
+start, goal = (25, 0), (45, 48)
 scan_grid = get_scan(start[0], start[1])
 print("grid map")
 print(scan_grid)
-prev = 0
+consecutive = False
+prevX = 0
+prevY = 0 
 for i in range(len(scan_grid)):
     if ((scan_grid[i][0] > 0) and (scan_grid[i][1] > 0)):
-        squareGrid.walls.append((scan_grid[i][0], scan_grid[i][1]))
+        x = int(scan_grid[i][0])
+        y = int(scan_grid[i][1])
+        squareGrid.walls.append((x, y))
+        if(consecutive):
+            slope = (prevY-y)/(prevX-x)
+            increment = 1
+            if(prevX>x):
+                increment = -1
+            print("slope ", slope, prevX, x, increment)
+            for j in range(prevX, x, increment):
+                interY = int(prevY + ((j-prevX+1)*slope))
+                print("inter ", j, interY)
+                squareGrid.walls.append((j, interY))
+        prevX = x
+        prevY = y
+        consecutive = True
+    else:
+        consecutive = False
+
 print(squareGrid.walls)
 came_from, cost_so_far = a_star_search(squareGrid, start, goal)
-#draw_grid(squareGrid, point_to=came_from, start=start, goal=goal)
-#print(came_from)
+
 path=reconstruct_path(came_from, start=start, goal=goal)
 print(path)
 draw_grid(squareGrid, path=path)
