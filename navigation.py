@@ -114,4 +114,7 @@ def main():
             current = (path[i][0], path[i][1])
 
 if __name__ == '__main__':
-  main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        destroy()
