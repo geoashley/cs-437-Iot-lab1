@@ -20,6 +20,7 @@
 
 """Main script to run the object detection routine."""
 import argparse
+from pickle import FALSE
 import sys
 import time
 
@@ -27,6 +28,8 @@ import cv2
 from object_detector import ObjectDetector
 from object_detector import ObjectDetectorOptions
 import utils
+import globalvars
+
 
 
 def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
@@ -89,8 +92,10 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
       if class_name == 'stop sign':
           if object_height/height >0.5:
               print('Stop sign detected nearby')
+              globalvars.stop_sign_found = True
           else:
               print('Stop sign detected at distance')
+              return False
               
    # print(detections.object)
 
@@ -115,13 +120,13 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
     # Stop the program if the ESC key is pressed.
     if cv2.waitKey(1) == 27:
       break
-    cv2.imshow('object_detector', image)
+    #cv2.imshow('object_detector', image)
 
   cap.release()
   cv2.destroyAllWindows()
 
 
-def main():
+def stop_sign_detection():
   parser = argparse.ArgumentParser(
       formatter_class=argparse.ArgumentDefaultsHelpFormatter)
   parser.add_argument(
@@ -161,5 +166,5 @@ def main():
       int(args.numThreads), bool(args.enableEdgeTPU))
 
 
-if __name__ == '__main__':
-  main()
+# if __name__ == '__main__':
+#   main()
