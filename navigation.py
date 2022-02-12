@@ -79,6 +79,33 @@ def scan_interpolate( x_carD, y_carD):
     print("obstacles")
     print(squareGrid.walls)
 
+def get_next(xOrg, yOrg, xNew, yNew):
+    xDist = xNew - xOrg 
+    yDist = yNew - yOrg 
+    forward = 0
+    turnLeft = 0
+    turnRight = 0
+
+    if (yOrg < yNew):
+        for i in range(yDist):
+            forward += 1
+
+    if (xNew > xOrg): 
+        for i in range(xDist):
+            turnLeft += 1
+
+    if (xNew < xOrg): 
+        for i in range(abs(xDist)):
+            turnRight += 1
+
+    if (turnRight > turnLeft):
+        return turnRight, forward
+
+    if (turnLeft > turnRight):
+        return turnLeft, forward
+
+    else:
+        return 0, forward
 
 # map the next direction
 direction = {0 : forward,
