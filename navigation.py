@@ -1,10 +1,12 @@
 
 
 from concurrent.futures import thread
+import math
 import time
 from detect import stop_sign_detection
 from drive import backward, forward, stop, turn_left, turn_right
 from mapping import get_scan
+from recalculate import recalculate_axes
 from routing import SquareGrid, a_star_search, draw_grid, reconstruct_path
 import globalvars
 import threading
@@ -64,12 +66,11 @@ direction = {0 : forward,
              3 : backward
 }  
 
-def stop_sign_detected():
-    while not globalvars.goal_reached:
-        if globalvars.stop_sign_found == True:
-            stop()
-            time.sleep(2)
-            globalvars.stop_sign_found = False
+def check_stop_sign():
+    if globalvars.stop_sign_found == True:
+        stop()
+        time.sleep(2)
+        globalvars.stop_sign_found = False
 
 def main():
     global squareGrid
@@ -78,14 +79,14 @@ def main():
     thread_1 = threading.Thread(target=stop_sign_detection)
     thread_1.start()
 
-    thread_2 = threading.Thread(target=stop_sign_detected)
-    thread_2.start()
+    # thread_2 = threading.Thread(target=stop_sign_detected)
+    # thread_2.start()
 
-    power = 10
-    squareGrid = SquareGrid(50, 50)
-    start, goal = (25, 0), (45, 48)
+    power = 1
+    start, goal = (25, 0), (45, 28)
     current = start
     while current != goal:
+        squareGrid = SquareGrid(50, 50)
         scan_interpolate(current[0], current[1])
         came_from, cost_so_far = a_star_search(squareGrid, current, goal)
         path=reconstruct_path(came_from, start=current, goal=goal)
@@ -95,13 +96,22 @@ def main():
             next_move = get_going(current[0], current[1], path[i][0], path[i][1])
             direction[next_move](power)
             if(next_move==1 or next_move ==2):
-                time.sleep(0.7)
+                print("recalculate")
+                print(current, goal, next_move)
+                start, goal = recalculate_axes(current, goal, next_move)
+                print(start, goal)
+                time.sleep(0.9)
+                current = start
+                break
             else:
-                time.sleep(0.2)
+                time.sleep(0.1)
+                current = (path[i][0], path[i][1])
+  
+            check_stop_sign()
             
-            current = (path[i][0], path[i][1])
         stop()
-    goal_reached = True
+    globalvars.goal_reached = True
+    print("Goal reached !")  
     
 if __name__ == '__main__':
     try:
