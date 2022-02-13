@@ -9,13 +9,13 @@ import threading
 
 def scan_interpolate( x_carD, y_carD, squareGrid):
     scan_grid = get_scan(x_carD, y_carD)
-    #print("grid map")
-    #print(scan_grid)
+    print("grid map")
+    print(scan_grid)
     consecutive = False
     prevX = 0
     prevY = 0 
     for i in range(len(scan_grid)):
-        if ((scan_grid[i][0] > 0) and (scan_grid[i][1] > 0)):
+        if ((scan_grid[i][0] >= x_carD) and (scan_grid[i][1] >= y_carD)):
             x = int(scan_grid[i][0])
             y = int(scan_grid[i][1])
             squareGrid.walls.append((x, y))
@@ -80,7 +80,7 @@ def main():
         scan_interpolate(current[0], current[1], squareGrid)
         came_from, cost_so_far = a_star_search(squareGrid, current, goal)
         path=reconstruct_path(came_from, start=current, goal=goal)
-      #  print(path)
+        print(path)
         draw_grid(squareGrid, path=path)
         no_steps = len(path) if len(path)<20 else 20
         for i in range(1, no_steps):
