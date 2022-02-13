@@ -18,6 +18,7 @@ def main():
     print(recalculate_axes((25, 5), (49, 49), 2))
     print(recalculate_axes((25, 5), (1, 49) , 1))
     print(recalculate_axes((25, 29) ,(45, 48), 1))
+    print(recalculate_axes((26, 19), (1, 20), 1))
 
 
 if __name__ == '__main__':

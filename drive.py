@@ -43,6 +43,12 @@ def get_distance_at(angle):
     angle_distance = [angle, distance]
     return distance
 
+def get_distance_at_no_wait(angle):
+    servo.set_angle(angle)
+    time.sleep(0.02)
+    distance = us.get_distance()
+    return distance
+
 def get_status_at(angle, ref1=35, ref2=10):
     dist = get_distance_at(angle)
     if dist > ref1 or dist == -2:

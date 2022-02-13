@@ -83,7 +83,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
 
     # Run object detection estimation using the model.
     detections = detector.detect(image)
-    print(detections)
+    #print(detections)
     for detection in detections:
       category = detection.categories[0]
       object_height = detection.bounding_box[3] - detection.bounding_box[1] 
@@ -91,7 +91,7 @@ def run(model: str, camera_id: int, width: int, height: int, num_threads: int,
      # print(class_name,object_height)
       if class_name == 'stop sign':
           if object_height/height >0.5:
-              print('Stop sign detected nearby')
+              print('$$$$  Stop sign detected nearby  $$$$')
               globalvars.stop_sign_found = True
           else:
               print('Stop sign detected at distance')
@@ -133,7 +133,7 @@ def stop_sign_detection():
       '--model',
       help='Path of the object detection model.',
       required=False,
-      default='efficientdet_lite0.tflite')
+      default='/home/pi/car/efficientdet_lite0.tflite')
   parser.add_argument(
       '--cameraId', help='Id of camera.', required=False, type=int, default=0)
   parser.add_argument(
