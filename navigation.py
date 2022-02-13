@@ -1,9 +1,10 @@
 import time
+from typing import List
 from detect import stop_sign_detection
 from drive import backward, forward, get_distance_at_no_wait, stop, turn_left, turn_right
 from mapping import get_scan
-from recalculate import recalculate_axes
-from routing import SquareGrid, a_star_search, draw_grid, reconstruct_path
+from recalculate import recalculate_axes, recalculate_axes_new, recalculate_axes_swap
+from routing import GridLocation, SquareGrid, a_star_search, draw_grid, reconstruct_path
 import globalvars
 import threading
 
@@ -15,9 +16,10 @@ def scan_interpolate( x_carD, y_carD, squareGrid):
     prevX = 0
     prevY = 0 
     for i in range(len(scan_grid)):
-        if ((scan_grid[i][0] >= x_carD) and (scan_grid[i][1] >= y_carD)):
-            x = int(scan_grid[i][0])
-            y = int(scan_grid[i][1])
+        x = int(scan_grid[i][0])
+        y = int(scan_grid[i][1])
+
+        if ((x, y)!=(x_carD, y_carD) ):
             squareGrid.walls.append((x, y))
             if(consecutive and prevX != x):
                 slope = (prevY-y)/(prevX-x)
@@ -37,20 +39,78 @@ def scan_interpolate( x_carD, y_carD, squareGrid):
     print("obstacles")
     print(squareGrid.walls)
 
-def get_going(xOrg, yOrg, xNew, yNew):
-    if (yOrg < yNew): #forward
-        print("forward")
-        return 0
-        
-    if (xNew > xOrg): #left
-        print("Left")
-        return 1
-    if (xNew < xOrg): #right
-        print("right")
-        return 2
-    else:
-        print("backward")
-        return 3
+def get_new_orientation( next_move, orientation):
+    if next_move == 1:
+        orientation -= 1
+        if orientation <0:
+            orientation = 3
+    if next_move == 2:
+        orientation += 1
+        if orientation > 3:
+            orientation = 0
+    return orientation
+
+
+
+def get_going(xOrg, yOrg, xNew, yNew, orientation):
+    print("get going ", xOrg, yOrg, xNew, yNew)
+    if orientation == 0: #north
+        if (yOrg < yNew): #forward
+            print("forward")
+            return 0
+            
+        if (xNew < xOrg): #left
+            print("Left")
+            return 1
+        if (xNew > xOrg): #right
+            print("right")
+            return 2
+        else:
+            print("backward")
+            return 3
+    if orientation == 1: #east
+        if (xOrg < xNew): #forward
+            print("forward")
+            return 0
+            
+        if (yNew > yOrg): #left
+            print("Left")
+            return 1
+        if (yNew < yOrg): #right
+            print("right")
+            return 2
+        else:
+            print("backward")
+            return 3
+    if orientation == 2:#south
+        if (yOrg > yNew): #forward
+            print("forward")
+            return 0
+            
+        if (xNew > xOrg): #left
+            print("Left")
+            return 1
+        if (xNew < xOrg): #right
+            print("right")
+            return 2
+        else:
+            print("backward")
+            return 3
+    if orientation == 3:#west
+        if (xOrg > xNew): #forward
+            print("forward")
+            return 0
+            
+        if (yNew < yOrg): #left
+            print("Left")
+            return 1
+        if (yNew > yOrg): #right
+            print("right")
+            return 2
+        else:
+            print("backward")
+            return 3
+
 
 # map the next direction
 direction = {0 : forward,
@@ -67,6 +127,7 @@ def check_stop_sign():
 
 def main():
     #squareGrid
+    orientation = 0
     globalvars.init()
 
     thread_1 = threading.Thread(target=stop_sign_detection)
@@ -75,8 +136,9 @@ def main():
     power = 1
     start, goal = (25, 0), (45, 45)
     current = start
+    squareGrid = SquareGrid(50, 50)
     while current != goal:
-        squareGrid = SquareGrid(50, 50)
+        squareGrid.walls = []
         scan_interpolate(current[0], current[1], squareGrid)
         came_from, cost_so_far = a_star_search(squareGrid, current, goal)
         path=reconstruct_path(came_from, start=current, goal=goal)
@@ -84,24 +146,35 @@ def main():
         draw_grid(squareGrid, path=path)
         no_steps = len(path) if len(path)<20 else 20
         for i in range(1, no_steps):
-            next_move = get_going(current[0], current[1], path[i][0], path[i][1])
+            next_move = get_going(current[0], current[1], path[i][0], path[i][1], orientation)
+            orientation = get_new_orientation(next_move, orientation)
+
+            print("next movee ", next_move)
+            print("orientation ", orientation)
+
             direction[next_move](power)
             if(next_move==1 or next_move ==2):
-                print("recalculate")
-                print(current, goal, next_move)
-                start, goal = recalculate_axes(current, goal, next_move)
-                print(start, goal)
-                time.sleep(1.5)
-                current = start
+                # print(current, goal, next_move)
+                # start, goal = recalculate_axes_swap(current, goal, next_move)
+                # print(start, goal)
+                print("taking a turn")
+                time.sleep(1.2)
+                print("moving a bit")
+                stop()
+                direction[0](10)
+                time.sleep(0.3 )
+                current = (path[i][0], path[i][1])
+
+                # current = start
                 break
             else:
-                time.sleep(0.01 )
-                current = (path[i][0], path[i][1])
                 check_stop_sign()
                 dist = get_distance_at_no_wait(0)
                 print("foward US dist ", dist)
                 if dist > 0 and dist < 10:
                     break
+                time.sleep(0.01 )
+                current = (path[i][0], path[i][1])
             
         stop()
     globalvars.goal_reached = True

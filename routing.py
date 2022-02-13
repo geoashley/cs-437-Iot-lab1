@@ -143,7 +143,7 @@ def a_star_search(graph: WeightedGraph, start: Location, goal: Location):
             if(next[0]==current[0]):
                 cost = 1
             else:
-                cost = 5
+                cost = 3
             new_cost = cost_so_far[current] + cost
 
             if next not in cost_so_far or new_cost < cost_so_far[next]:
