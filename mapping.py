@@ -18,15 +18,15 @@ us = Ultrasonic(Pin('D8'), Pin('D9'))
 pan_servo = Servo(PWM("P0"), offset=ultrasonic_servo_offset)
 
 #numpy arrays
-gridMap = np.zeros((10,2)) # hold values used to calculate points [x,y]
 gridFinal = np.zeros((10,10)) # holds 10 X 10 coordinate map
 
 
 def get_scan( x_carD, y_carD):
+    gridMap = np.zeros((10,2)) # hold values used to calculate points [x,y]
     #replaces empty numpy array with [degree of angle, distance from sensor]
     actualAngle = 90
     pan_servo.set_angle(actualAngle)
-    sleep(1)
+    sleep(0.3)
 
     #print("gridMAp inital",gridMap)
     for i in range(len(gridMap)):
@@ -37,7 +37,7 @@ def get_scan( x_carD, y_carD):
         if (distance >0 and distance <= 25):
             gridMap[i][1] = distance
         actualAngle -= 18
-        sleep(1)
+        sleep(0.3)
    # print("gridMAp mid")
     #print(gridMap)
     #calculates cartesian points
@@ -47,10 +47,10 @@ def get_scan( x_carD, y_carD):
     #print("gridMAp cart")
     #print(gridMap)
     #determines if cartesian point is an object
-    for i in range(len(gridMap)):
-        if not ((gridMap[i][0] > 0) and (gridMap[i][1] > 0)):
-           gridMap[i][0] = 0
-           gridMap[i][1] = 0
+    # for i in range(len(gridMap)):
+    #     if not ((gridMap[i][0] > x_carD) and (gridMap[i][1] > y_carD)):
+    #        gridMap[i][0] = 0
+    #        gridMap[i][1] = 0
 
     return gridMap
 

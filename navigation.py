@@ -1,28 +1,21 @@
-
-
-from concurrent.futures import thread
-import math
 import time
 from detect import stop_sign_detection
-from drive import backward, forward, stop, turn_left, turn_right
+from drive import backward, forward, get_distance_at_no_wait, stop, turn_left, turn_right
 from mapping import get_scan
 from recalculate import recalculate_axes
 from routing import SquareGrid, a_star_search, draw_grid, reconstruct_path
 import globalvars
 import threading
 
-
-
-
-def scan_interpolate( x_carD, y_carD):
+def scan_interpolate( x_carD, y_carD, squareGrid):
     scan_grid = get_scan(x_carD, y_carD)
-    #print("grid map")
-    #print(scan_grid)
+    print("grid map")
+    print(scan_grid)
     consecutive = False
     prevX = 0
     prevY = 0 
     for i in range(len(scan_grid)):
-        if ((scan_grid[i][0] > 0) and (scan_grid[i][1] > 0)):
+        if ((scan_grid[i][0] >= x_carD) and (scan_grid[i][1] >= y_carD)):
             x = int(scan_grid[i][0])
             y = int(scan_grid[i][1])
             squareGrid.walls.append((x, y))
@@ -73,24 +66,21 @@ def check_stop_sign():
         globalvars.stop_sign_found = False
 
 def main():
-    global squareGrid
+    #squareGrid
     globalvars.init()
 
     thread_1 = threading.Thread(target=stop_sign_detection)
     thread_1.start()
 
-    # thread_2 = threading.Thread(target=stop_sign_detected)
-    # thread_2.start()
-
     power = 1
-    start, goal = (25, 0), (45, 28)
+    start, goal = (25, 0), (45, 45)
     current = start
     while current != goal:
         squareGrid = SquareGrid(50, 50)
-        scan_interpolate(current[0], current[1])
+        scan_interpolate(current[0], current[1], squareGrid)
         came_from, cost_so_far = a_star_search(squareGrid, current, goal)
         path=reconstruct_path(came_from, start=current, goal=goal)
-      #  print(path)
+        print(path)
         draw_grid(squareGrid, path=path)
         no_steps = len(path) if len(path)<20 else 20
         for i in range(1, no_steps):
@@ -101,14 +91,17 @@ def main():
                 print(current, goal, next_move)
                 start, goal = recalculate_axes(current, goal, next_move)
                 print(start, goal)
-                time.sleep(0.7)
+                time.sleep(1.5)
                 current = start
                 break
             else:
-                time.sleep(0.1)
+                time.sleep(0.01 )
                 current = (path[i][0], path[i][1])
-  
-            check_stop_sign()
+                check_stop_sign()
+                dist = get_distance_at_no_wait(0)
+                print("foward US dist ", dist)
+                if dist > 0 and dist < 10:
+                    break
             
         stop()
     globalvars.goal_reached = True
