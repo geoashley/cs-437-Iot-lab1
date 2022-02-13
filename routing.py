@@ -143,7 +143,7 @@ def a_star_search(graph: WeightedGraph, start: Location, goal: Location):
             if(next[0]==current[0]):
                 cost = 1
             else:
-                cost = 3
+                cost = 2
             new_cost = cost_so_far[current] + cost
 
             if next not in cost_so_far or new_cost < cost_so_far[next]:
@@ -175,16 +175,24 @@ class SquareGridNeighborOrder(SquareGrid):
 
 # print(range(squareGrid.height))
 # print(range(squareGrid.width))
-start, goal = (1, 4), (8, 3)
-print(squareGrid.walls)
-came_from, cost_so_far = a_star_search(squareGrid, start, goal)
-#draw_grid(squareGrid, point_to=came_from, start=start, goal=goal)
-#print(came_from)
-path=reconstruct_path(came_from, start=start, goal=goal)
-print(path)
-draw_grid(squareGrid, path=path)
+# start, goal = (1, 4), (8, 3)
+# print(squareGrid.walls)
+# came_from, cost_so_far = a_star_search(squareGrid, start, goal)
+# #draw_grid(squareGrid, point_to=came_from, start=start, goal=goal)
+# #print(came_from)
+# path=reconstruct_path(came_from, start=start, goal=goal)
+# print(path)
+# draw_grid(squareGrid, path=path)
 
 #start, goal = (1, 4), (8, 3)
 #came_from, cost_so_far = a_star_search(squareGrid, start, goal)
 #draw_grid(squareGrid, number=cost_so_far, start=start, goal=goal)
- 
+
+start, goal = (25, 0), (49, 49)
+current = start
+squareGrid = SquareGrid(50, 50)
+squareGrid.walls = [(25, 35),(25, 34),(25, 33),  (23, 33), (25, 36), (24, 35), (20, 34), (23, 32), (22, 33), (21, 33)]
+came_from, cost_so_far = a_star_search(squareGrid, current, goal)
+path=reconstruct_path(came_from, start=current, goal=goal)
+print(path)
+draw_grid(squareGrid, path=path)

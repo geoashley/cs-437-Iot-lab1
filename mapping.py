@@ -22,7 +22,7 @@ gridFinal = np.zeros((10,10)) # holds 10 X 10 coordinate map
 
 
 def get_scan( x_carD, y_carD):
-    gridMap = np.zeros((10,2)) # hold values used to calculate points [x,y]
+    gridMap = np.zeros((10,3)) # hold values used to calculate points [x,y]
     #replaces empty numpy array with [degree of angle, distance from sensor]
     actualAngle = 90
     pan_servo.set_angle(actualAngle)
@@ -42,6 +42,7 @@ def get_scan( x_carD, y_carD):
     #print(gridMap)
     #calculates cartesian points
     for i in range(len(gridMap)):
+        gridMap[i][2] = gridMap[i][1]
         gridMap[i][0] = int(gridMap[i][1] * math.sin(math.radians(gridMap[i][0])) + x_carD)
         gridMap[i][1] = int(gridMap[i][1] * math.cos(math.radians(gridMap[i][0])) + y_carD)
     #print("gridMAp cart")

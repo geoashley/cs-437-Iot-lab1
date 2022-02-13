@@ -21,6 +21,8 @@ def scan_interpolate( x_carD, y_carD, squareGrid):
 
         if ((x, y)!=(x_carD, y_carD) ):
             squareGrid.walls.append((x, y))
+            squareGrid.walls.append((x, y-1))
+            squareGrid.walls.append((x, y-2))
             if(consecutive and prevX != x):
                 slope = (prevY-y)/(prevX-x)
                 increment = 1
@@ -134,7 +136,7 @@ def main():
     thread_1.start()
 
     power = 1
-    start, goal = (25, 0), (45, 45)
+    start, goal = (25, 0), (49, 49)
     current = start
     squareGrid = SquareGrid(50, 50)
     while current != goal:
@@ -162,7 +164,7 @@ def main():
                 print("moving a bit")
                 stop()
                 direction[0](10)
-                time.sleep(0.3 )
+                time.sleep(0.6 )
                 current = (path[i][0], path[i][1])
 
                 # current = start
